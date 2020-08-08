@@ -17,7 +17,7 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 		<sqs:basic-connection testQueueArn="${secure::testQueueArn}" accessKey="${secure::accessKey}" secretKey="${secure::secretKey}" region="${secure::region}" />
 	</sqs:config>
 	<configuration-properties doc:name="Configuration properties" doc:id="71c4582a-341b-47d1-9f44-10af2d643153" file="application.properties" />
-	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="7b6335a4-7e83-4e4d-b52f-99e6f62dad8a" file="application.properties" key="mule" >
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="7b6335a4-7e83-4e4d-b52f-99e6f62dad8a" file="application.properties" key="****" >
 		<secure-properties:encrypt algorithm="Blowfish" />
 	</secure-properties:config>
 	<flow name="createSNSTopics" doc:id="3aa454b8-6313-4451-9d25-ae1fde2ce993" >
