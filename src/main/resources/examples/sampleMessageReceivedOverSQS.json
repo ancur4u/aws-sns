@@ -1,0 +1,12 @@
+{
+  "Type" : "Notification",
+  "MessageId" : "c292a14d-7ba6-5a8d-9703-f6e5ff9e9246",
+  "TopicArn" : "arn:aws:sns:ap-south-1:960096286456:testTopic",
+  "Subject" : "Hello world",
+  "Message" : "good morning India!",
+  "Timestamp" : "2020-08-08T10:44:08.111Z",
+  "SignatureVersion" : "1",
+  "Signature" : "PuXgUpAvpUxH2O/hEwFom0A/ZMfUrvcFg1RInYNWYMgjG5uZkK8jyu1dcvXGOYj7BTdrRRU2WiKVqUxYKajqX9hdd5VmozNUXfHmFPx5l22p5IWDpsRuDrLIMgoeniX3Tj+girymXz5WOA1Zp5+qusaqUjX8JpuBd9C/UJufyVZaxkmHuR8JRfhjwQOdRGuGTLBe2T/i5zuwg/eLX5+3gwAnPmeJyHh8SL70CbKEojIH4J/zdd5I1IL1JFIn75y+/no37WQ7dtO08EH+mQx2X8ptzyC85DM+qw+3kjOigA/GXSX+AEZ9fbK2JyIoIG6YBKenjSH7KAJWieqk1q+Eqw==",
+  "SigningCertURL" : "https://sns.ap-south-1.amazonaws.com/SimpleNotificationService-a86cb10b4e1f29c941702d737128f7b6.pem",
+  "UnsubscribeURL" : "https://sns.ap-south-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:ap-south-1:960096286456:testTopic:7bd9de54-3a04-47f0-b7a2-4359dfd378ff"
+}

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:sqs="http://www.mulesoft.org/schema/mule/sqs"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:sns="http://www.mulesoft.org/schema/mule/sns" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/sns http://www.mulesoft.org/schema/mule/sns/current/mule-sns.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/sqs http://www.mulesoft.org/schema/mule/sqs/current/mule-sqs.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<sns:config name="Amazon_SNS_configuration" doc:name="Amazon SNS configuration" doc:id="7c9ac489-a71b-4769-af11-64563e8ddb38" defaultTopicArn="${secure::defaultTopicArn}">
+		<sns:basic-connection accessKey="${secure::accessKey}" secretKey="${secure::secretKey}" region="${secure::region}" testTopic="${secure::testTopic}"/>
+	</sns:config>
+	<sqs:config name="Amazon_SQS_Configuration" doc:name="Amazon SQS Configuration" doc:id="2389d025-f3c2-4d37-86bb-700637036fa5">
+		<sqs:basic-connection testQueueArn="${secure::testQueueArn}" accessKey="${secure::accessKey}" secretKey="${secure::secretKey}" region="${secure::region}" />
+	</sqs:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="71c4582a-341b-47d1-9f44-10af2d643153" file="application.properties" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="7b6335a4-7e83-4e4d-b52f-99e6f62dad8a" file="application.properties" key="mule" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<flow name="createSNSTopics" doc:id="3aa454b8-6313-4451-9d25-ae1fde2ce993" >
+		<http:listener doc:name="Listener" doc:id="f7e679ab-e9aa-4231-b486-244762d527c7" config-ref="Domain_HTTP_Listener_config" path="/createSNSTopic" allowedMethods="POST"/>
+		<set-variable value="#[payload.topicName]" doc:name="Set Variable topicName" doc:id="5d43b466-fd73-4cc0-9636-50d258d2c251" variableName="topicName"/>
+		<sns:create-topic doc:name="Create topic" doc:id="da9473a6-af8e-4b11-9479-82678625c3c2" config-ref="Amazon_SNS_configuration" topicName="#[vars.topicName]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="51b8725e-33c1-4ae0-ab07-80fc4b72d219" message='#["SNS Topic created successfully."]'/>
+	</flow>
+	<flow name="publish" doc:id="2ca74c9a-339e-460a-9886-cabb2a65f2ea" >
+		<http:listener doc:name="Listener" doc:id="68be2e0c-eab8-47bc-8535-4a1e80f2731b" config-ref="Domain_HTTP_Listener_config" path="/publish" allowedMethods="POST"/>
+		<sns:publish doc:name="Publish" doc:id="f8985e88-7e05-4bd0-9e4c-30ea4a10a9a9" config-ref="Amazon_SNS_configuration" topicArn="#[payload.topic_arn]" subject="#[payload.subject]">
+			<sns:message><![CDATA[#[payload.message]]]></sns:message>
+		</sns:publish>
+		<logger level="INFO" doc:name="Logger" doc:id="1abfb4e6-d7d3-4708-bf27-8b058087c34f" message='#["Message published."]' />
+	</flow>
+	<flow name="SQSReceiver" doc:id="a5fa1d43-8714-45ce-a3f0-027433c16d39" initialState="started">
+		<sqs:receivemessages doc:name="Receive messages" doc:id="691c90ff-0a68-4807-b96e-5df4dbcc63de" config-ref="Amazon_SQS_Configuration" queueUrl="https://sqs.ap-south-1.amazonaws.com/960096286456/testSQS" numberOfMessages="10"/>
+		<logger level="INFO" doc:name="Logger" doc:id="a2cd2832-b7bc-4580-a37e-ebaaf4bb0ab1" message="#[payload]"/>
+	</flow>
+	<flow name="subscribe" doc:id="4757e14c-2cf5-46c1-9125-2604d29c33fd" >
+		<http:listener doc:name="Listener" doc:id="392fd34e-afae-409b-8590-7a63755e7f6b" config-ref="Domain_HTTP_Listener_config" path="/subscribe"/>
+		<sns:subscribe doc:name="Subscribe" doc:id="03c39b3d-5979-48ab-888d-6f9c2ac58405" config-ref="Amazon_SNS_configuration" topicArn="#[payload.topic_arn]" protocol="#[payload.protocol]" endpoint='#[payload.endpoint]'/>
+		<logger level="INFO" doc:name="Logger" doc:id="388f3cd8-cebe-4ba5-8e01-a6f02dc79b42" message='#["payload: "++ payload]'/>
+	</flow>
+	<flow name="listSNSTopics" doc:id="52e171f8-03cc-40c7-ad14-5a21ac4c4a77">
+		<http:listener doc:name="Listener" doc:id="8551b760-d200-47fa-b4cb-55350cd76dd2" config-ref="Domain_HTTP_Listener_config" path="/listTopics" />
+		<sns:list-topics doc:name="List topics" doc:id="20521e2a-84e2-486c-ae1d-7cf7eab6422a" config-ref="Amazon_SNS_configuration" />
+		<ee:transform doc:name="Transform Message" doc:id="e99dbe36-db2c-4ca1-a974-65cc234ca89a">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+import * from dw::core::Strings
+output application/json
+---
+Details:{
+"topics": payload map(value,index)->{
+		("topicName"): substringAfterLast(value.payload,":"),
+		("arn"): value.payload
+},
+	"count": sizeOf(payload.payload)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e0a95901-9533-4de2-9f48-8d81bfd4c851" message="#[payload]" />
+	</flow>
+	<flow name="deleteSNSTopics" doc:id="bc1435c4-f180-4609-8f77-83c2d22b2037" >
+		<http:listener doc:name="Listener" doc:id="01a92c6c-1b97-4bb5-8de1-8007887addda" config-ref="Domain_HTTP_Listener_config" path="/deleteTopics" allowedMethods="POST"/>
+		<sns:delete-topic doc:name="Delete topic" doc:id="00cc326f-ba5b-4332-9e84-ece7e93853f4" config-ref="Amazon_SNS_configuration" topicArn="#[payload.topic_arn]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="1430e013-df41-465f-9849-d957de51b9c8" message='#["Topic deleted: " ++ payload.topic_arn as String]'/>
+	</flow>
+</mule>

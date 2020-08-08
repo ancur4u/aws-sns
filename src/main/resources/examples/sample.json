@@ -1,0 +1,46 @@
+[
+  {
+    "inboundAttachmentNames": [],
+    "exceptionPayload": null,
+    "inboundPropertyNames": [],
+    "outboundAttachmentNames": [],
+    "outboundPropertyNames": [],
+    "payload": "arn:aws:sns:ap-south-1:960096286456:testTopic",
+    "attributes": {
+      "requestId": "906f74ae-3fac-586f-925a-230ac24462b6"
+    }
+  },
+  {
+    "inboundAttachmentNames": [],
+    "exceptionPayload": null,
+    "inboundPropertyNames": [],
+    "outboundAttachmentNames": [],
+    "outboundPropertyNames": [],
+    "payload": "arn:aws:sns:ap-south-1:960096286456:testTopic1",
+    "attributes": {
+      "requestId": "906f74ae-3fac-586f-925a-230ac24462b6"
+    }
+  },
+  {
+    "inboundAttachmentNames": [],
+    "exceptionPayload": null,
+    "inboundPropertyNames": [],
+    "outboundAttachmentNames": [],
+    "outboundPropertyNames": [],
+    "payload": "arn:aws:sns:ap-south-1:960096286456:testTopic2",
+    "attributes": {
+      "requestId": "906f74ae-3fac-586f-925a-230ac24462b6"
+    }
+  },
+  {
+    "inboundAttachmentNames": [],
+    "exceptionPayload": null,
+    "inboundPropertyNames": [],
+    "outboundAttachmentNames": [],
+    "outboundPropertyNames": [],
+    "payload": "arn:aws:sns:ap-south-1:960096286456:testTopic3",
+    "attributes": {
+      "requestId": "906f74ae-3fac-586f-925a-230ac24462b6"
+    }
+  }
+]
